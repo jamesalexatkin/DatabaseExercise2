@@ -30,12 +30,39 @@ public class DatabaseHandler {
     private static final String COL_HAT_DESCRIPTION = "description";
     private static final String COL_HAT_PRICE = "price";
     
+    // PreparedStatements
+    PreparedStatement insertJokeStatement;
+    PreparedStatement insertGiftStatement;
+    PreparedStatement insertHatStatement;
+    
     // Connection for the database
 	private Connection connection;
    
 	// Constructor
     public DatabaseHandler(Connection connection) {
 		this.connection = connection;
+		try {
+			initStatements();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void initStatements() throws SQLException {
+		// Statement for inserting a joke
+		String insertJokeString = "INSERT INTO " + TABLE_JOKE + " (" +
+	    		COL_JOKE_JID + ", " + COL_JOKE_JOKE + ", " + COL_JOKE_ROYALTY + ") VALUES (?, ?, ?);";
+	    insertJokeStatement = connection.prepareStatement(insertJokeString);
+	    
+	    // Statement for inserting a gift
+	    String insertGiftString = "INSERT INTO " + TABLE_GIFT + " (" +
+	    		COL_GIFT_GID + ", " + COL_GIFT_DESCRIPTION + ", " + COL_GIFT_PRICE + ") VALUES (?, ?, ?);";
+	    insertGiftStatement = connection.prepareStatement(insertGiftString);
+	    
+	    // Statement for inserting a hat
+	    String insertHatString = "INSERT INTO " + TABLE_HAT + " (" +
+	    		COL_HAT_HID + ", " + COL_HAT_DESCRIPTION + ", " + COL_HAT_PRICE + ") VALUES (?, ?, ?);";
+	    insertHatStatement = connection.prepareStatement(insertHatString);
 	}
 
 	public void createDatabase() {
@@ -78,11 +105,50 @@ public class DatabaseHandler {
 
 	private void createTable(String sql, String tableName) {
 		try {
-			PreparedStatement create = connection.prepareStatement(sql);		
-			create.executeUpdate();
+			PreparedStatement createTableStatement = connection.prepareStatement(sql);		
+			createTableStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("Error creating table '" + tableName + "'.");
 		}		
+	}
+
+	public void insertJoke(int jid, String joke, float royalty) {
+		try {
+			insertJokeStatement.setInt(1, jid);
+			insertJokeStatement.setString(2, joke);
+			insertJokeStatement.setFloat(3, royalty);
+			insertJokeStatement.executeUpdate();
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error inserting joke.");
+		}
+	}
+
+	public void insertGift(int gid, String description, float price) {
+		try {
+			insertGiftStatement.setInt(1, gid);
+			insertGiftStatement.setString(2, description);
+			insertGiftStatement.setFloat(3, price);
+			insertGiftStatement.executeUpdate();
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error inserting gift.");
+		}		
+	}
+
+	public void insertHat(int hid, String description, float price) {
+		try {
+			insertHatStatement.setInt(1, hid);
+			insertHatStatement.setString(2, description);
+			insertHatStatement.setFloat(3, price);
+			insertHatStatement.executeUpdate();
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error inserting hat.");
+		}	
 	}
 }
