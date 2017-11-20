@@ -31,9 +31,10 @@ public class DatabaseHandler {
     private static final String COL_HAT_PRICE = "price";
     
     // PreparedStatements
-    PreparedStatement insertJokeStatement;
-    PreparedStatement insertGiftStatement;
-    PreparedStatement insertHatStatement;
+    private PreparedStatement insertJokeStatement;
+    private PreparedStatement insertGiftStatement;
+    private PreparedStatement insertHatStatement;
+    private PreparedStatement insertCrackerStatement;
     
     // Connection for the database
 	private Connection connection;
@@ -63,6 +64,11 @@ public class DatabaseHandler {
 	    String insertHatString = "INSERT INTO " + TABLE_HAT + " (" +
 	    		COL_HAT_HID + ", " + COL_HAT_DESCRIPTION + ", " + COL_HAT_PRICE + ") VALUES (?, ?, ?);";
 	    insertHatStatement = connection.prepareStatement(insertHatString);
+	    
+	    // Statement for inserting a cracker
+	    String insertCrackerString = "INSERT INTO " + TABLE_CRACKER + " (" +
+	    		COL_CRACKER_CID + ", " + COL_CRACKER_NAME + ", " + COL_CRACKER_JID + ", " + COL_CRACKER_GID + ", " + COL_CRACKER_HID + ", " + COL_CRACKER_SALEPRICE + ", " + COL_CRACKER_QUANTITY + ") VALUES (?, ?, ?, ?, ?, ?, ?);";
+	    insertCrackerStatement = connection.prepareStatement(insertCrackerString);
 	}
 
 	public void createDatabase() {
@@ -99,9 +105,27 @@ public class DatabaseHandler {
                 COL_CRACKER_HID + " integer REFERENCES " + TABLE_HAT + " (" + COL_HAT_HID + "), " +
                 COL_CRACKER_SALEPRICE + " decimal(4,2) NOT NULL CHECK (" + COL_CRACKER_SALEPRICE + " >= 0), " + 
                 COL_CRACKER_QUANTITY + " integer NOT NULL CHECK (" + COL_CRACKER_QUANTITY + " >= 0)" +
-                ");";      
+                ");";   
         createTable(sql, TABLE_CRACKER);
     }
+
+	public void dropDatabase() {		
+		dropTable(TABLE_CRACKER);
+		dropTable(TABLE_JOKE);
+		dropTable(TABLE_GIFT);
+		dropTable(TABLE_HAT);
+	}
+	
+	private void dropTable(String tableName) {
+		String sql = "DROP TABLE " + tableName + ";";
+		try {
+			PreparedStatement dropStatement = connection.prepareStatement(sql);
+			dropStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error dropping table '" + tableName + "'.");
+		}
+	}
 
 	private void createTable(String sql, String tableName) {
 		try {
@@ -151,4 +175,23 @@ public class DatabaseHandler {
 			System.out.println("Error inserting hat.");
 		}	
 	}
+
+	public void insertCracker(int cid, String name, int jid, int gid, int hid, float saleprice, int quantity) {
+		try {
+			insertCrackerStatement.setInt(1, cid);
+			insertCrackerStatement.setString(2, name);
+			insertCrackerStatement.setInt(3, jid);
+			insertCrackerStatement.setInt(4, gid);
+			insertCrackerStatement.setInt(5, hid);
+			insertCrackerStatement.setFloat(6, saleprice);
+			insertCrackerStatement.setInt(7, quantity);
+			insertCrackerStatement.executeUpdate();
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error inserting cracker.");
+		}	
+	}
+
+	
 }
