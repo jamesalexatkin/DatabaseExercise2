@@ -21,6 +21,7 @@ public class UserInterface {
 
 	private JFrame frmBbcDatabase;
 	private JTextField txtCrackerId;
+	private JTextField txtJokeId;
 
 	/**
 	 * Launch the application.
@@ -87,12 +88,19 @@ public class UserInterface {
 		JButton btnCrackerReport = new JButton("Produce cracker report!");
 		panelReportWest.add(btnCrackerReport, "cell 0 6");
 		
-		JLabel label = new JLabel("Cracker ID:");
-		panelReport.add(label, BorderLayout.SOUTH);
-		
 		JPanel panelReportEast = new JPanel();
 		panelReport.add(panelReportEast, BorderLayout.EAST);
-		panelReportEast.setLayout(new MigLayout("", "[114px]", "[15px][][][][][][161px]"));
+		panelReportEast.setLayout(new MigLayout("", "[114px]", "[15px][][][][][][][][][][][161px]"));
+		
+		JLabel lblJokeReport = new JLabel("Joke ID:");
+		panelReportEast.add(lblJokeReport, "flowy,cell 0 5,growx,aligny top");
+		
+		txtJokeId = new JTextField();
+		panelReportEast.add(txtJokeId, "cell 0 5,alignx left,aligny center");
+		txtJokeId.setColumns(10);
+		
+		JButton btnJokeReport = new JButton("Produce joke report!");
+		panelReportEast.add(btnJokeReport, "cell 0 6 1 6");
 		
 		JPanel panelInsert = new JPanel();
 		tabbedPane.addTab("Add a New Cracker", null, panelInsert, null);
@@ -101,7 +109,7 @@ public class UserInterface {
 		txtMessageBox.setText("Message Box:\n----------------");
 		txtMessageBox.setLineWrap(true);
 		GridBagConstraints gbc_txtMessageBox = new GridBagConstraints();
-		gbc_txtMessageBox.gridheight = 2;
+		gbc_txtMessageBox.gridheight = 5;
 		gbc_txtMessageBox.anchor = GridBagConstraints.NORTH;
 		gbc_txtMessageBox.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtMessageBox.gridx = 0;
