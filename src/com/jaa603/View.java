@@ -1,3 +1,4 @@
+package com.jaa603;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -9,6 +10,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JSpinner;
@@ -16,33 +18,26 @@ import javax.swing.JPanel;
 import java.awt.Component;
 import javax.swing.Box;
 import javax.swing.JInternalFrame;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.awt.event.ActionEvent;
 
-public class UserInterface {
+public class View {
 
 	private JFrame frmBbcDatabase;
 	private JTextField txtCrackerId;
 	private JTextField txtJokeId;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					UserInterface window = new UserInterface();
-					window.frmBbcDatabase.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	protected Adapter adapter;
 
+	private final String MESSAGE_FROM_DB = "Message from Database";
+	
 	/**
 	 * Create the application.
 	 */
-	public UserInterface() {
+	public View(Adapter adapter) {
+		this.adapter = adapter;
 		initialize();
 	}
 
@@ -86,11 +81,24 @@ public class UserInterface {
 		txtCrackerId.setColumns(10);
 		
 		JButton btnCrackerReport = new JButton("Produce cracker report!");
+		btnCrackerReport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String cid = txtCrackerId.getText();
+				try {
+					ResultSet queryResults = adapter.getCracker(cid);
+					CrackerReportView report = new CrackerReportView(queryResults);
+				} catch (SQLException ex) {
+					JOptionPane.showMessageDialog(null, "Error retrieving data", MESSAGE_FROM_DB, 0);
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Error parsing input. Please enter a valid integer greater than zero.", MESSAGE_FROM_DB, 0);
+				}
+			}
+		});
 		panelReportWest.add(btnCrackerReport, "cell 0 6");
 		
 		JPanel panelReportEast = new JPanel();
 		panelReport.add(panelReportEast, BorderLayout.EAST);
-		panelReportEast.setLayout(new MigLayout("", "[114px]", "[15px][][][][][][][][][][][161px]"));
+		panelReportEast.setLayout(new MigLayout("", "[114px]", "[15px][][][][][][161px]"));
 		
 		JLabel lblJokeReport = new JLabel("Joke ID:");
 		panelReportEast.add(lblJokeReport, "flowy,cell 0 5,growx,aligny top");
@@ -105,16 +113,7 @@ public class UserInterface {
 		JPanel panelInsert = new JPanel();
 		tabbedPane.addTab("Add a New Cracker", null, panelInsert, null);
 		
-		JTextArea txtMessageBox = new JTextArea();
-		txtMessageBox.setText("Message Box:\n----------------");
-		txtMessageBox.setLineWrap(true);
-		GridBagConstraints gbc_txtMessageBox = new GridBagConstraints();
-		gbc_txtMessageBox.gridheight = 5;
-		gbc_txtMessageBox.anchor = GridBagConstraints.NORTH;
-		gbc_txtMessageBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtMessageBox.gridx = 0;
-		gbc_txtMessageBox.gridy = 7;
-		frmBbcDatabase.getContentPane().add(txtMessageBox, gbc_txtMessageBox);
+		frmBbcDatabase.setVisible(true);
 	}
 
 }

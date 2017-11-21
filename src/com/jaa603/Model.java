@@ -1,20 +1,26 @@
-import java.awt.*;
-import java.sql.*;
+package com.jaa603;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Random;
 
-import javax.swing.*;
-
-public class Program {
-	public static void main(String[] args){
-		Connection dbConn = connectToDatabase();
-		DatabaseHandler db = new DatabaseHandler(dbConn);
+public class Model {
+	
+	private Connection dbConn;
+	private DatabaseHandler db;
+	
+	public Model() {
+		dbConn = connectToDatabase();
+		db = new DatabaseHandler(dbConn);
 		db.dropDatabase();
 		db.createDatabase();
 		generateJokes(db);
 		generateGifts(db);
 		generateHats(db);
 		generateCrackers(db);
-		showUI();
+		System.out.println("DB set up");
 	}
 	
 	private static Connection connectToDatabase() {
@@ -78,17 +84,8 @@ public class Program {
 			db.insertHat(i, description, price);
 		}
 	}
-	
-	public static void showUI() {
-		JFrame frame = new JFrame("UI");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		JLabel label = new JLabel("label");
-		label.setPreferredSize(new Dimension(500, 500));
-		label.setBackground(new Color(0,255,0));
-		label.setFont(new Font("Serif", Font.PLAIN, 40));
-		label.setOpaque(true);
-		frame.getContentPane().add(label);
-		frame.pack();
-		frame.setVisible(true);
+
+	public ResultSet getCracker(String cid) throws SQLException, NumberFormatException {
+		return db.selectCracker(cid);		
 	}
 }

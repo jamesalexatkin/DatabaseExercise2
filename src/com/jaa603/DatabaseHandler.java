@@ -1,3 +1,4 @@
+package com.jaa603;
 import java.sql.*;
 
 public class DatabaseHandler {
@@ -36,8 +37,11 @@ public class DatabaseHandler {
     private PreparedStatement insertHatStatement;
     private PreparedStatement insertCrackerStatement;
     
+    private PreparedStatement selectCrackerStatement;
+    
     // Connection for the database
 	private Connection connection;
+	
    
 	// Constructor
     public DatabaseHandler(Connection connection) {
@@ -69,6 +73,10 @@ public class DatabaseHandler {
 	    String insertCrackerString = "INSERT INTO " + TABLE_CRACKER + " (" +
 	    		COL_CRACKER_CID + ", " + COL_CRACKER_NAME + ", " + COL_CRACKER_JID + ", " + COL_CRACKER_GID + ", " + COL_CRACKER_HID + ", " + COL_CRACKER_SALEPRICE + ", " + COL_CRACKER_QUANTITY + ") VALUES (?, ?, ?, ?, ?, ?, ?);";
 	    insertCrackerStatement = connection.prepareStatement(insertCrackerString);
+	    
+	    // Statement for selecting a cracker
+	    String selectCrackerString = "SELECT * FROM " + TABLE_CRACKER + " WHERE " + COL_CRACKER_CID + " = ?;";
+	    selectCrackerStatement = connection.prepareStatement(selectCrackerString);
 	}
 
 	public void createDatabase() {
@@ -191,6 +199,12 @@ public class DatabaseHandler {
 			e.printStackTrace();
 			System.out.println("Error inserting cracker.");
 		}	
+	}
+
+	public ResultSet selectCracker(String cid) throws SQLException, NumberFormatException {
+		int cidInt = Integer.parseInt(cid);
+		selectCrackerStatement.setInt(1, cidInt);
+		return selectCrackerStatement.executeQuery();
 	}
 
 	
