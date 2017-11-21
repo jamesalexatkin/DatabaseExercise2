@@ -75,7 +75,12 @@ public class DatabaseHandler {
 	    insertCrackerStatement = connection.prepareStatement(insertCrackerString);
 	    
 	    // Statement for selecting a cracker
-	    String selectCrackerString = "SELECT * FROM " + TABLE_CRACKER + " WHERE " + COL_CRACKER_CID + " = ?;";
+	    String selectCrackerString = "SELECT Cracker.cid, Cracker.name, Gift.description, Joke.joke, Hat.description, Cracker.saleprice, (Joke.royalty + Gift.price + Hat.price) AS costprice, Cracker.quantity, ((saleprice - (Joke.royalty + Gift.price + Hat.price)) * quantity) AS netprofit"
+	    		+ " FROM (((Cracker"
+	    		+ " INNER JOIN Joke ON Cracker.jid = Joke.jid)"
+	    		+ " INNER JOIN Gift ON Cracker.gid = Gift.gid)"
+	    		+ " INNER JOIN Hat ON Cracker.hid = Hat.hid)"
+	    		+ " WHERE Cracker.cid = ?;";
 	    selectCrackerStatement = connection.prepareStatement(selectCrackerString);
 	}
 

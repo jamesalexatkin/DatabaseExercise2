@@ -14,12 +14,12 @@ public class Model {
 	public Model() {
 		dbConn = connectToDatabase();
 		db = new DatabaseHandler(dbConn);
-		db.dropDatabase();
-		db.createDatabase();
-		generateJokes(db);
-		generateGifts(db);
-		generateHats(db);
-		generateCrackers(db);
+//		db.dropDatabase();
+//		db.createDatabase();
+//		generateJokes(db, 0.01f, 1.5f);
+//		generateGifts(db, 0.01f, 1.5f);
+//		generateHats(db, 0.01f, 1.5f);
+//		generateCrackers(db, 1.5f, 4.0f);
 		System.out.println("DB set up");
 	}
 	
@@ -37,10 +37,8 @@ public class Model {
 		return null;
 	}
 	
-	private static void generateCrackers(DatabaseHandler db) {
+	private static void generateCrackers(DatabaseHandler db, float min, float max) {
 		Random r = new Random();
-		int min = 3;
-		int max = 10;
 		for (int i = 0; i < 1000; i++) {
 			String name = "Cracker " + i;
 			int jid = r.nextInt(100);
@@ -52,10 +50,8 @@ public class Model {
 		}
 	}
 
-	public static void generateJokes(DatabaseHandler db) {
+	public static void generateJokes(DatabaseHandler db, float min, float max) {
 		Random r = new Random();
-		int min = 0;
-		int max = 5;
 		for (int i = 0; i < 100; i++) {
 			String joke = "Joke " + i;
 			float royalty = min + r.nextFloat() * (max - min);
@@ -63,10 +59,8 @@ public class Model {
 		}
 	}
 	
-	public static void generateGifts(DatabaseHandler db) {
+	public static void generateGifts(DatabaseHandler db, float min, float max) {
 		Random r = new Random();
-		int min = 0;
-		int max = 5;
 		for (int i = 0; i < 100; i++) {
 			String description = "Gift " + i;
 			float price = min + r.nextFloat() * (max - min);
@@ -74,10 +68,8 @@ public class Model {
 		}
 	}
 	
-	public static void generateHats(DatabaseHandler db) {
+	public static void generateHats(DatabaseHandler db, float min, float max) {
 		Random r = new Random();
-		int min = 0;
-		int max = 5;
 		for (int i = 0; i < 100; i++) {
 			String description = "Hat " + i;
 			float price = min + r.nextFloat() * (max - min);
