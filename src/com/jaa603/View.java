@@ -22,6 +22,11 @@ import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.border.EtchedBorder;
+import javax.swing.ListSelectionModel;
 
 public class View {
 
@@ -32,6 +37,7 @@ public class View {
 	protected Adapter adapter;
 
 	private final String MESSAGE_FROM_DB = "Message from Database";
+	private JTable table;
 	
 	/**
 	 * Create the application.
@@ -47,7 +53,7 @@ public class View {
 	private void initialize() {
 		frmBbcDatabase = new JFrame();
 		frmBbcDatabase.setTitle("BBC Database");
-		frmBbcDatabase.setBounds(100, 100, 450, 300);
+		frmBbcDatabase.setBounds(100, 100, 535, 284);
 		frmBbcDatabase.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{438, 0};
@@ -125,6 +131,38 @@ public class View {
 		
 		JPanel panelInsert = new JPanel();
 		tabbedPane.addTab("Add a New Cracker", null, panelInsert, null);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		panelInsert.add(scrollPane);
+		
+		table = new JTable();
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setCellSelectionEnabled(true);
+		table.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null, null, null},
+			},
+			new String[] {
+				"cid", "name", "jid", "gid", "hid", "saleprice"
+			}
+		));
+		scrollPane.setViewportView(table);
+		
+		JButton btnNewButton = new JButton("New button");
+		scrollPane.setColumnHeaderView(btnNewButton);
+		
+		JButton btnAddCracker = new JButton("Add new cracker!");
+		btnAddCracker.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		GridBagConstraints gbc_btnAddCracker = new GridBagConstraints();
+		gbc_btnAddCracker.insets = new Insets(0, 0, 5, 0);
+		gbc_btnAddCracker.gridx = 0;
+		gbc_btnAddCracker.gridy = 7;
+		frmBbcDatabase.getContentPane().add(btnAddCracker, gbc_btnAddCracker);
 		
 		frmBbcDatabase.setVisible(true);
 	}
