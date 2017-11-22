@@ -2,35 +2,6 @@ package com.jaa603;
 import java.sql.*;
 
 public class DatabaseHandler {
-    // First, set up the table and column names
-    // Store as constants to eliminate misspelling
-    // Table names
-    private static final String TABLE_CRACKER = "Cracker";
-    private static final String TABLE_JOKE = "Joke";
-    private static final String TABLE_GIFT = "Gift";
-    private static final String TABLE_HAT = "Hat";
-   
-    // Column names
-    private static final String COL_CRACKER_CID = "cid";
-    private static final String COL_CRACKER_NAME = "name";
-    private static final String COL_CRACKER_JID = "jid";
-    private static final String COL_CRACKER_GID = "gid";
-    private static final String COL_CRACKER_HID = "hid";
-    private static final String COL_CRACKER_SALEPRICE = "saleprice";
-    private static final String COL_CRACKER_QUANTITY = "quantity";
-   
-    private static final String COL_JOKE_JID = "jid";
-    private static final String COL_JOKE_JOKE = "joke";
-    private static final String COL_JOKE_ROYALTY = "royalty";
-   
-    private static final String COL_GIFT_GID = "gid";
-    private static final String COL_GIFT_DESCRIPTION = "description";
-    private static final String COL_GIFT_PRICE = "price";
-   
-    private static final String COL_HAT_HID = "hid";
-    private static final String COL_HAT_DESCRIPTION = "description";
-    private static final String COL_HAT_PRICE = "price";
-    
     // PreparedStatements
     private PreparedStatement insertJokeStatement;
     private PreparedStatement insertGiftStatement;
@@ -56,26 +27,22 @@ public class DatabaseHandler {
 
 	private void initStatements() throws SQLException {
 		// Statement for inserting a joke
-		String insertJokeString = "INSERT INTO " + TABLE_JOKE + " (" +
-	    		COL_JOKE_JID + ", " + COL_JOKE_JOKE + ", " + COL_JOKE_ROYALTY + ") VALUES (?, ?, ?);";
+		String insertJokeString = "INSERT INTO Joke (jid, joke, royalty) VALUES (?, ?, ?);";
 	    insertJokeStatement = connection.prepareStatement(insertJokeString);
 	    
 	    // Statement for inserting a gift
-	    String insertGiftString = "INSERT INTO " + TABLE_GIFT + " (" +
-	    		COL_GIFT_GID + ", " + COL_GIFT_DESCRIPTION + ", " + COL_GIFT_PRICE + ") VALUES (?, ?, ?);";
+	    String insertGiftString = "INSERT INTO Gift (gid, description, price) VALUES (?, ?, ?);";
 	    insertGiftStatement = connection.prepareStatement(insertGiftString);
 	    
 	    // Statement for inserting a hat
-	    String insertHatString = "INSERT INTO " + TABLE_HAT + " (" +
-	    		COL_HAT_HID + ", " + COL_HAT_DESCRIPTION + ", " + COL_HAT_PRICE + ") VALUES (?, ?, ?);";
+	    String insertHatString = "INSERT INTO Hat (hid, description, price) VALUES (?, ?, ?);";
 	    insertHatStatement = connection.prepareStatement(insertHatString);
 	    
 	    // Statement for inserting a cracker
-	    String insertCrackerString = "INSERT INTO " + TABLE_CRACKER + " (" +
-	    		COL_CRACKER_CID + ", " + COL_CRACKER_NAME + ", " + COL_CRACKER_JID + ", " + COL_CRACKER_GID + ", " + COL_CRACKER_HID + ", " + COL_CRACKER_SALEPRICE + ", " + COL_CRACKER_QUANTITY + ") VALUES (?, ?, ?, ?, ?, ?, ?);";
+	    String insertCrackerString = "INSERT INTO Cracker (cid, name, jid, gid, hid, saleprice, quantity) VALUES (?, ?, ?, ?, ?, ?, ?);";
 	    insertCrackerStatement = connection.prepareStatement(insertCrackerString);
 	    
-	    // Statement for selecting a cracker
+	    // Statement for selecting a cracker (Part 3.1)
 	    String selectCrackerString = "SELECT Cracker.cid, Cracker.name, Gift.description, Joke.joke, Hat.description, Cracker.saleprice, (Joke.royalty + Gift.price + Hat.price) AS costprice, Cracker.quantity, ((saleprice - (Joke.royalty + Gift.price + Hat.price)) * quantity) AS netprofit"
 	    		+ " FROM (((Cracker"
 	    		+ " INNER JOIN Joke ON Cracker.jid = Joke.jid)"
@@ -84,58 +51,58 @@ public class DatabaseHandler {
 	    		+ " WHERE Cracker.cid = ?;";
 	    selectCrackerStatement = connection.prepareStatement(selectCrackerString);
 	
-	    // Statement for selecting a joke
+	    // Statement for selecting a joke (Part 3.2)
 	    String selectJokeString = "SELECT Joke.jid, Joke.joke, Joke.royalty, SUM(Cracker.quantity) AS numberofuses, SUM(Cracker.quantity * Joke.royalty) AS totalroyalty"
-				+ " FROM Joke"
-				+ " INNER JOIN Cracker ON Joke.jid = Cracker.jid"
-				+ " WHERE Joke.jid = ?"
-				+ " GROUP BY Joke.jid;";
+			+ " FROM Joke"
+			+ " INNER JOIN Cracker ON Joke.jid = Cracker.jid"
+			+ " WHERE Joke.jid = ?"
+			+ " GROUP BY Joke.jid;";
 	    selectJokeStatement = connection.prepareStatement(selectJokeString);
 	}
 
 	public void createDatabase() {
 		// Create joke table
-		String sql = "CREATE TABLE " + TABLE_JOKE + " ( " +
-				COL_JOKE_JID + " integer PRIMARY KEY, " +
-				COL_JOKE_JOKE + " text NOT NULL, " +
-				COL_JOKE_ROYALTY + " decimal(4,2) NOT NULL CHECK (" + COL_JOKE_ROYALTY + " >= 0)" +
-				");";
-		createTable(sql, TABLE_JOKE);
+		String sql = "CREATE TABLE Joke (" 
+				+ "jid integer PRIMARY KEY, "
+				+ "joke text NOT NULL, " 
+				+ "royalty decimal(4,2) NOT NULL CHECK (royalty >= 0)" 
+				+ ");";
+		createTable(sql, "Joke");
 		
 		// Create gift table
-		sql = "CREATE TABLE " + TABLE_GIFT + " ( " +
-				COL_GIFT_GID + " integer PRIMARY KEY, " +
-				COL_GIFT_DESCRIPTION + " text NOT NULL, " +
-				COL_GIFT_PRICE + " decimal(4,2) NOT NULL CHECK (" + COL_GIFT_PRICE + " >= 0)" +
-				");";
-		createTable(sql, TABLE_GIFT);
+		sql = "CREATE TABLE Gift ( " 
+				+ "gid integer PRIMARY KEY, " 
+				+ "description text NOT NULL, " 
+				+ "price decimal(4,2) NOT NULL CHECK (price >= 0)" 
+				+ ");";
+		createTable(sql, "Gift");
 		
 		// Create hat table
-		sql = "CREATE TABLE " + TABLE_HAT + " ( " +
-				COL_HAT_HID + " integer PRIMARY KEY, " +
-				COL_HAT_DESCRIPTION + " text NOT NULL, " +
-				COL_HAT_PRICE + " decimal(4,2) NOT NULL CHECK (" + COL_HAT_PRICE + " >= 0)" +
-				");";
-		createTable(sql, TABLE_HAT);
+		sql = "CREATE TABLE Hat ( " 
+				+ "hid integer PRIMARY KEY, " 
+				+ "description text NOT NULL, " 
+				+ "price decimal(4,2) NOT NULL CHECK (price >= 0)" 
+				+ ");";
+		createTable(sql, "Hat");
 		
 		// Create cracker table
-        sql = "CREATE TABLE " + TABLE_CRACKER + " ( " +
-                COL_CRACKER_CID + " integer PRIMARY KEY, " +
-                COL_CRACKER_NAME + " text NOT NULL, " + 
-                COL_CRACKER_JID + " integer REFERENCES " + TABLE_JOKE + " (" + COL_JOKE_JID + "), " +
-                COL_CRACKER_GID + " integer REFERENCES " + TABLE_GIFT + " (" + COL_GIFT_GID + "), " +
-                COL_CRACKER_HID + " integer REFERENCES " + TABLE_HAT + " (" + COL_HAT_HID + "), " +
-                COL_CRACKER_SALEPRICE + " decimal(4,2) NOT NULL CHECK (" + COL_CRACKER_SALEPRICE + " >= 0), " + 
-                COL_CRACKER_QUANTITY + " integer NOT NULL CHECK (" + COL_CRACKER_QUANTITY + " >= 0)" +
-                ");";   
-        createTable(sql, TABLE_CRACKER);
+        sql = "CREATE TABLE Cracker ( " 
+		+ "cid integer PRIMARY KEY, " 
+        		+ "name text NOT NULL, " 
+        		+ "jid integer REFERENCES Joke(jid), " 
+        		+ "gid integer REFERENCES Gift(gid), " 
+        		+ "hid integer REFERENCES Hat(hid), " 
+        		+ "saleprice decimal(4,2) NOT NULL CHECK (saleprice >= 0), " 
+        		+ "quantity integer NOT NULL CHECK (quantity >= 0)" 
+        		+ ");";   
+        createTable(sql, "Cracker");
     }
 
 	public void dropDatabase() {		
-		dropTable(TABLE_CRACKER);
-		dropTable(TABLE_JOKE);
-		dropTable(TABLE_GIFT);
-		dropTable(TABLE_HAT);
+		dropTable("Cracker");
+		dropTable("Joke");
+		dropTable("Gift");
+		dropTable("Hat");
 	}
 	
 	private void dropTable(String tableName) {

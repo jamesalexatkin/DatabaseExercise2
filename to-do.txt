@@ -1,0 +1,9 @@
+* Do Part 3.3
+* Close database connection
+* Refactor code:
+	- Check that files are sensible
+	/ Get rid of constants in DatabaseHandler
+* Check exceptions are raised in appropriate places
+* Scale JTable column headings
+* Scale JFrame
+* Figure out what to do for viva
