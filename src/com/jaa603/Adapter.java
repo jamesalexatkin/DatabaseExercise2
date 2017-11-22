@@ -18,4 +18,12 @@ public class Adapter {
 	public ResultSet getJoke(String jid) throws SQLException, NumberFormatException {
 		return model.getJoke(jid);
 	}
+
+	public void addCracker(Object cid, Object name, Object jid, Object gid, Object hid, Object saleprice, int quantity) throws NumberFormatException, SQLException {
+		model.addCracker(cid, name, jid, gid, hid, saleprice, quantity);
+	}
+
+	public void closeDbConnection() {
+		model.closeDbConnection();
+	}
 }

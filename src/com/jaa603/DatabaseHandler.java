@@ -62,7 +62,7 @@ public class DatabaseHandler {
 
 	public void createDatabase() {
 		// Create joke table
-		String sql = "CREATE TABLE Joke (" 
+		String sql = "CREATE TABLE Joke ("
 				+ "jid integer PRIMARY KEY, "
 				+ "joke text NOT NULL, " 
 				+ "royalty decimal(4,2) NOT NULL CHECK (royalty >= 0)" 
@@ -89,8 +89,8 @@ public class DatabaseHandler {
         sql = "CREATE TABLE Cracker ( " 
 		+ "cid integer PRIMARY KEY, " 
         		+ "name text NOT NULL, " 
-        		+ "jid integer REFERENCES Joke(jid), " 
-        		+ "gid integer REFERENCES Gift(gid), " 
+        		+ "jid integer REFERENCES Joke(jid) NOT NULL, " 
+        		+ "gid integer REFERENCES Gift(gid) NOT NULL, " 
         		+ "hid integer REFERENCES Hat(hid), " 
         		+ "saleprice decimal(4,2) NOT NULL CHECK (saleprice >= 0), " 
         		+ "quantity integer NOT NULL CHECK (quantity >= 0)" 
@@ -192,6 +192,18 @@ public class DatabaseHandler {
 		int jidInt = Integer.parseInt(jid);
 		selectJokeStatement.setInt(1, jidInt);
 		return selectJokeStatement.executeQuery();
+	}
+
+	public void insertCracker(Object cid, Object name, Object jid, Object gid, Object hid, Object saleprice,
+			int quantity) throws SQLException, NumberFormatException {
+			insertCrackerStatement.setInt(1, Integer.parseInt((String) cid));
+			insertCrackerStatement.setString(2, (String) name);
+			insertCrackerStatement.setInt(3, Integer.parseInt((String) jid));
+			insertCrackerStatement.setInt(4, Integer.parseInt((String) gid));
+			insertCrackerStatement.setInt(5, Integer.parseInt((String) hid));
+			insertCrackerStatement.setFloat(6, Float.parseFloat((String) saleprice));
+			insertCrackerStatement.setInt(7, quantity);
+			insertCrackerStatement.executeUpdate();
 	}
 
 	

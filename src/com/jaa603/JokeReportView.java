@@ -28,9 +28,9 @@ public class JokeReportView extends JFrame {
 	 * Create the frame.
 	 */
 	public JokeReportView(ResultSet queryResults) {
-		setTitle("Report for Cracker");
+		setTitle("Report for Joke");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 581, 300);
+		setBounds(100, 100, 418, 130);
 		scrollPane = new JScrollPane();
 		scrollPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		ScrollPaneLayout spl_scrollPane = new ScrollPaneLayout();
@@ -47,7 +47,7 @@ public class JokeReportView extends JFrame {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			table = new JTable();
-			JOptionPane.showMessageDialog(null, "Error retrieving data. Check to ensure that you've entered an ID between 0 and 999.", "Message from Database", 0);
+			JOptionPane.showMessageDialog(null, "Error retrieving data. Check to ensure that you've entered an ID between 0 and 99.", "Message from Database", 0);
 		}
 		
 		scrollPane = new JScrollPane(table);

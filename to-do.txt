@@ -1,5 +1,5 @@
-* Do Part 3.3
-* Close database connection
+/ Do Part 3.3
+/ Close database connection
 * Refactor code:
 	- Check that files are sensible
 	/ Get rid of constants in DatabaseHandler
@@ -7,3 +7,29 @@
 * Scale JTable column headings
 * Scale JFrame
 * Figure out what to do for viva
+
+/ Part 1
+	/ primary keys
+	/ foreign keys
+	/ non-null constraints
+	
+* Part 2
+	- 2.1
+		* database created correctly
+		* tables created correctly - appropriate constraints
+	- 2.2
+		* some realistic data
+		* rest is filler data
+* Part 3
+	- 3.1
+		* produce report for cracker
+	- 3.2
+		* produce report for joke
+	- 3.3
+		* insert new cracker
+		* test all constraints
+
+* Run through code to refactor
+* Remove unused bits and pieces
+* Add comments
+* Run formatter over code

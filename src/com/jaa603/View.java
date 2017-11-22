@@ -27,6 +27,9 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.ListSelectionModel;
+import javax.swing.BoxLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class View {
 
@@ -52,6 +55,12 @@ public class View {
 	 */
 	private void initialize() {
 		frmBbcDatabase = new JFrame();
+		frmBbcDatabase.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				adapter.closeDbConnection();
+			}
+		});
 		frmBbcDatabase.setTitle("BBC Database");
 		frmBbcDatabase.setBounds(100, 100, 535, 284);
 		frmBbcDatabase.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -120,10 +129,12 @@ public class View {
 				try {
 					ResultSet queryResults = adapter.getJoke(jid);
 					JokeReportView report = new JokeReportView(queryResults);
-				} catch (SQLException ex) {
-					JOptionPane.showMessageDialog(null, "Error retrieving data. Check to ensure that you've entered an ID between 0 and 99.", MESSAGE_FROM_DB, 0);
-				} catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(null, "Error parsing input. Please enter a valid integer greater than zero.", MESSAGE_FROM_DB, 0);
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(null, e1.getMessage(), MESSAGE_FROM_DB, 0);
+					e1.printStackTrace();
+				} catch (NumberFormatException e1) {
+					JOptionPane.showMessageDialog(null, e1.toString(), MESSAGE_FROM_DB, 0);
+					e1.printStackTrace();
 				}
 			}
 		});
@@ -131,9 +142,10 @@ public class View {
 		
 		JPanel panelInsert = new JPanel();
 		tabbedPane.addTab("Add a New Cracker", null, panelInsert, null);
+		panelInsert.setLayout(new BorderLayout(0, 0));
 		
 		JScrollPane scrollPane = new JScrollPane();
-		panelInsert.add(scrollPane);
+		panelInsert.add(scrollPane, BorderLayout.CENTER);
 		
 		table = new JTable();
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -153,16 +165,28 @@ public class View {
 		scrollPane.setColumnHeaderView(btnNewButton);
 		
 		JButton btnAddCracker = new JButton("Add new cracker!");
+		panelInsert.add(btnAddCracker, BorderLayout.SOUTH);
 		btnAddCracker.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+				Object cid = dtm.getValueAt(0, 0);
+				Object name = dtm.getValueAt(0, 1);
+				Object jid = dtm.getValueAt(0, 2);
+				Object gid = dtm.getValueAt(0, 3);
+				Object hid = dtm.getValueAt(0, 4);
+				Object saleprice = dtm.getValueAt(0, 5);
 				
+				try {
+					adapter.addCracker(cid, name, jid, gid, hid, saleprice, 0);
+				} catch (NumberFormatException e1) {
+					JOptionPane.showMessageDialog(null, "Error creating new cracker. Ensure all fields are filled in.", MESSAGE_FROM_DB, 0);
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(null, e1.getMessage(), MESSAGE_FROM_DB, 0);
+					e1.printStackTrace();
+				}
 			}
 		});
-		GridBagConstraints gbc_btnAddCracker = new GridBagConstraints();
-		gbc_btnAddCracker.insets = new Insets(0, 0, 5, 0);
-		gbc_btnAddCracker.gridx = 0;
-		gbc_btnAddCracker.gridy = 7;
-		frmBbcDatabase.getContentPane().add(btnAddCracker, gbc_btnAddCracker);
 		
 		frmBbcDatabase.setVisible(true);
 	}

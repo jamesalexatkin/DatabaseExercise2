@@ -3,6 +3,7 @@ package com.jaa603;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;
+import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -45,7 +46,7 @@ public class CrackerReportView extends JFrame {
 	public CrackerReportView(ResultSet queryResults) {
 		setTitle("Report for Cracker");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 703, 330);
+		setBounds(100, 100, 680, 130);
 		scrollPane = new JScrollPane();
 		scrollPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		ScrollPaneLayout spl_scrollPane = new ScrollPaneLayout();
@@ -63,6 +64,7 @@ public class CrackerReportView extends JFrame {
 			e.printStackTrace();
 			table = new JTable();
 			JOptionPane.showMessageDialog(null, "Error retrieving data. Check to ensure that you've entered an ID between 0 and 999.", "Message from Database", 0);
+			this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 		}
 		
 		scrollPane = new JScrollPane(table);
