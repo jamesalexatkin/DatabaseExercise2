@@ -38,6 +38,7 @@ public class DatabaseHandler {
     private PreparedStatement insertCrackerStatement;
     
     private PreparedStatement selectCrackerStatement;
+    private PreparedStatement selectJokeStatement;
     
     // Connection for the database
 	private Connection connection;
@@ -82,6 +83,14 @@ public class DatabaseHandler {
 	    		+ " INNER JOIN Hat ON Cracker.hid = Hat.hid)"
 	    		+ " WHERE Cracker.cid = ?;";
 	    selectCrackerStatement = connection.prepareStatement(selectCrackerString);
+	
+	    // Statement for selecting a joke
+	    String selectJokeString = "SELECT Joke.jid, Joke.joke, Joke.royalty, SUM(Cracker.quantity) AS numberofuses, SUM(Cracker.quantity * Joke.royalty) AS totalroyalty"
+				+ " FROM Joke"
+				+ " INNER JOIN Cracker ON Joke.jid = Cracker.jid"
+				+ " WHERE Joke.jid = ?"
+				+ " GROUP BY Joke.jid;";
+	    selectJokeStatement = connection.prepareStatement(selectJokeString);
 	}
 
 	public void createDatabase() {
@@ -210,6 +219,12 @@ public class DatabaseHandler {
 		int cidInt = Integer.parseInt(cid);
 		selectCrackerStatement.setInt(1, cidInt);
 		return selectCrackerStatement.executeQuery();
+	}
+
+	public ResultSet selectJoke(String jid) throws SQLException, NumberFormatException {
+		int jidInt = Integer.parseInt(jid);
+		selectJokeStatement.setInt(1, jidInt);
+		return selectJokeStatement.executeQuery();
 	}
 
 	

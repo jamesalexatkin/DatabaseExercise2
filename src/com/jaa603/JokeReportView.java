@@ -2,37 +2,23 @@ package com.jaa603;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.TextArea;
+import java.awt.Font;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTable;
 import javax.swing.ScrollPaneLayout;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import org.postgresql.util.PSQLException;
-
-import java.awt.GridLayout;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.BoxLayout;
-import javax.swing.JTable;
-import javax.swing.SpringLayout;
-import javax.swing.border.BevelBorder;
-import java.awt.Font;
-
-public class CrackerReportView extends JFrame {
+public class JokeReportView extends JFrame {
 
 	private JScrollPane scrollPane;
 	private ResultSet queryResults;
@@ -40,9 +26,8 @@ public class CrackerReportView extends JFrame {
 
 	/**
 	 * Create the frame.
-	 * @param queryResults 
 	 */
-	public CrackerReportView(ResultSet queryResults) {
+	public JokeReportView(ResultSet queryResults) {
 		setTitle("Report for Cracker");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 581, 300);
@@ -68,20 +53,16 @@ public class CrackerReportView extends JFrame {
 		scrollPane = new JScrollPane(table);
 		setContentPane(scrollPane);
 		
-		setVisible(true);		
+		setVisible(true);
 	}
 
-	private JTable unpackResultSet() throws SQLException, PSQLException {
+	private JTable unpackResultSet() throws SQLException {
 		queryResults.next();
-		int cid = queryResults.getInt(1);
-		String crackerName = queryResults.getString(2);
-		String giftDescription = queryResults.getString(3);
-		String joke = queryResults.getString(4);
-		String hatDescription = queryResults.getString(5);
-		float saleprice = queryResults.getFloat(6);
-		float costprice = queryResults.getFloat(7);
-		int quantity = queryResults.getInt(8);
-		float netprofit = queryResults.getFloat(9);
+		int jid = queryResults.getInt(1);
+		String joke = queryResults.getString(2);
+		float royalty = queryResults.getFloat(3);
+		int numberofuses = queryResults.getInt(4);
+		float totalroyalty = queryResults.getFloat(5);
 		
 		ResultSetMetaData metaData = queryResults.getMetaData();		
 		Vector<String> fieldNames = new Vector<String>();
@@ -97,11 +78,7 @@ public class CrackerReportView extends JFrame {
 		data.add(firstRow);
 		
 		
-		return new JTable(new DefaultTableModel(data, fieldNames));
-		//scrollPane.add(table);
-//		scrollPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-//		setContentPane(scrollPane);
-//		ScrollPaneLayout spl_scrollPane = new ScrollPaneLayout();
-//		scrollPane.setLayout(spl_scrollPane);
+		return new JTable(new DefaultTableModel(data, fieldNames));		
 	}
+	
 }

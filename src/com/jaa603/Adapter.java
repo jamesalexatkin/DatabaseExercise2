@@ -14,4 +14,8 @@ public class Adapter {
 	public ResultSet getCracker(String cid) throws SQLException, NumberFormatException {
 		return model.getCracker(cid);
 	}
+
+	public ResultSet getJoke(String jid) throws SQLException, NumberFormatException {
+		return model.getJoke(jid);
+	}
 }

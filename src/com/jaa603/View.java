@@ -88,7 +88,7 @@ public class View {
 					ResultSet queryResults = adapter.getCracker(cid);
 					CrackerReportView report = new CrackerReportView(queryResults);
 				} catch (SQLException ex) {
-					JOptionPane.showMessageDialog(null, "Error retrieving data", MESSAGE_FROM_DB, 0);
+					JOptionPane.showMessageDialog(null, "Error retrieving data. Check to ensure that you've entered an ID between 0 and 999.", MESSAGE_FROM_DB, 0);
 				} catch (NumberFormatException ex) {
 					JOptionPane.showMessageDialog(null, "Error parsing input. Please enter a valid integer greater than zero.", MESSAGE_FROM_DB, 0);
 				}
@@ -108,6 +108,19 @@ public class View {
 		txtJokeId.setColumns(10);
 		
 		JButton btnJokeReport = new JButton("Produce joke report!");
+		btnJokeReport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String jid = txtJokeId.getText();
+				try {
+					ResultSet queryResults = adapter.getJoke(jid);
+					JokeReportView report = new JokeReportView(queryResults);
+				} catch (SQLException ex) {
+					JOptionPane.showMessageDialog(null, "Error retrieving data. Check to ensure that you've entered an ID between 0 and 99.", MESSAGE_FROM_DB, 0);
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Error parsing input. Please enter a valid integer greater than zero.", MESSAGE_FROM_DB, 0);
+				}
+			}
+		});
 		panelReportEast.add(btnJokeReport, "cell 0 6 1 6");
 		
 		JPanel panelInsert = new JPanel();

@@ -80,4 +80,8 @@ public class Model {
 	public ResultSet getCracker(String cid) throws SQLException, NumberFormatException {
 		return db.selectCracker(cid);		
 	}
+
+	public ResultSet getJoke(String jid) throws SQLException, NumberFormatException {
+		return db.selectJoke(jid);	
+	}
 }

@@ -17,24 +17,18 @@ import javax.swing.ScrollPaneLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import org.postgresql.util.PSQLException;
-
 import java.awt.GridLayout;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.BoxLayout;
 import javax.swing.JTable;
 import javax.swing.SpringLayout;
-import javax.swing.border.BevelBorder;
-import java.awt.Font;
 
-public class CrackerReportView extends JFrame {
+public class CrackerReportView2 extends JFrame {
 
-	private JScrollPane scrollPane;
+	private JScrollPane contentPane;
 	private ResultSet queryResults;
 	private JTable table;
 
@@ -42,36 +36,41 @@ public class CrackerReportView extends JFrame {
 	 * Create the frame.
 	 * @param queryResults 
 	 */
-	public CrackerReportView(ResultSet queryResults) {
+	public CrackerReportView2(ResultSet queryResults) {
 		setTitle("Report for Cracker");
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 581, 300);
-		scrollPane = new JScrollPane();
-		scrollPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		ScrollPaneLayout spl_scrollPane = new ScrollPaneLayout();
-		scrollPane.setLayout(spl_scrollPane);
+		contentPane = new JScrollPane();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		//SpringLayout sl_contentPane = new SpringLayout();
+		ScrollPaneLayout sc_layout = new ScrollPaneLayout();
+		contentPane.setLayout(sc_layout);
+		
+		
+		table = new JTable();
+		
+//		sl_contentPane.putConstraint(SpringLayout.NORTH, table_1, -92, SpringLayout.SOUTH, contentPane);
+//		sl_contentPane.putConstraint(SpringLayout.WEST, table_1, 186, SpringLayout.WEST, contentPane);
+//		sl_contentPane.putConstraint(SpringLayout.SOUTH, table_1, -116, SpringLayout.SOUTH, contentPane);
+//		sl_contentPane.putConstraint(SpringLayout.EAST, table_1, -385, SpringLayout.EAST, contentPane);
+		//contentPane.add(table_1);
+		
+		//JScrollPane scrollPane = new JScrollPane(table_1);
+		contentPane.add(table);
+		
+		setVisible(true);
 		
 		this.queryResults = queryResults;
 		
 		try {
-			table = unpackResultSet();
-			table.setFont(new Font("Dialog", Font.PLAIN, 12));
-			table.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-			table.setFillsViewportHeight(true);
-			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			unpackResultSet(table);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			table = new JTable();
-			JOptionPane.showMessageDialog(null, "Error retrieving data. Check to ensure that you've entered an ID between 0 and 999.", "Message from Database", 0);
 		}
-		
-		scrollPane = new JScrollPane(table);
-		setContentPane(scrollPane);
-		
-		setVisible(true);		
 	}
 
-	private JTable unpackResultSet() throws SQLException, PSQLException {
+	private void unpackResultSet(JTable table) throws SQLException {
 		queryResults.next();
 		int cid = queryResults.getInt(1);
 		String crackerName = queryResults.getString(2);
@@ -96,12 +95,10 @@ public class CrackerReportView extends JFrame {
 		}
 		data.add(firstRow);
 		
+		table = new JTable(new DefaultTableModel(data, fieldNames));
+		//contentPane.add(table/*, BorderLayout.CENTER*/);
+		contentPane = new JScrollPane(table);
 		
-		return new JTable(new DefaultTableModel(data, fieldNames));
-		//scrollPane.add(table);
-//		scrollPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-//		setContentPane(scrollPane);
-//		ScrollPaneLayout spl_scrollPane = new ScrollPaneLayout();
-//		scrollPane.setLayout(spl_scrollPane);
+		
 	}
 }
