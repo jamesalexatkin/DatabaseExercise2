@@ -1,7 +1,5 @@
 package com.jaa603;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -10,7 +8,6 @@ import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneLayout;
@@ -56,13 +53,13 @@ public class JokeReportView extends JFrame {
 		setVisible(true);
 	}
 
+	/**
+	 * Unpacks a ResultSet into a JTable.
+	 * @return
+	 * @throws SQLException
+	 */
 	private JTable unpackResultSet() throws SQLException {
 		queryResults.next();
-		int jid = queryResults.getInt(1);
-		String joke = queryResults.getString(2);
-		float royalty = queryResults.getFloat(3);
-		int numberofuses = queryResults.getInt(4);
-		float totalroyalty = queryResults.getFloat(5);
 		
 		ResultSetMetaData metaData = queryResults.getMetaData();		
 		Vector<String> fieldNames = new Vector<String>();
@@ -75,8 +72,7 @@ public class JokeReportView extends JFrame {
 		for(int i = 1; i <= metaData.getColumnCount(); i++) {
 			firstRow.add(queryResults.getObject(i));
 		}
-		data.add(firstRow);
-		
+		data.add(firstRow);		
 		
 		return new JTable(new DefaultTableModel(data, fieldNames));		
 	}

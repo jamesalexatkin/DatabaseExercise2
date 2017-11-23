@@ -1,10 +1,8 @@
 package com.jaa603;
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
-import javax.swing.JTextArea;
 import net.miginfocom.swing.MigLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -13,11 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import javax.swing.JSpinner;
 import javax.swing.JPanel;
-import java.awt.Component;
-import javax.swing.Box;
-import javax.swing.JInternalFrame;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,7 +21,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.ListSelectionModel;
-import javax.swing.BoxLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -98,15 +91,8 @@ public class View {
 		JButton btnCrackerReport = new JButton("Produce cracker report!");
 		btnCrackerReport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String cid = txtCrackerId.getText();
-				try {
-					ResultSet queryResults = adapter.getCracker(cid);
-					CrackerReportView report = new CrackerReportView(queryResults);
-				} catch (SQLException ex) {
-					JOptionPane.showMessageDialog(null, "Error retrieving data. Check to ensure that you've entered an ID between 0 and 999.", MESSAGE_FROM_DB, 0);
-				} catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(null, "Error parsing input. Please enter a valid integer greater than zero.", MESSAGE_FROM_DB, 0);
-				}
+				generateCrackerReport();
+				
 			}
 		});
 		panelReportWest.add(btnCrackerReport, "cell 0 6");
@@ -125,17 +111,8 @@ public class View {
 		JButton btnJokeReport = new JButton("Produce joke report!");
 		btnJokeReport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String jid = txtJokeId.getText();
-				try {
-					ResultSet queryResults = adapter.getJoke(jid);
-					JokeReportView report = new JokeReportView(queryResults);
-				} catch (SQLException e1) {
-					JOptionPane.showMessageDialog(null, e1.getMessage(), MESSAGE_FROM_DB, 0);
-					e1.printStackTrace();
-				} catch (NumberFormatException e1) {
-					JOptionPane.showMessageDialog(null, e1.toString(), MESSAGE_FROM_DB, 0);
-					e1.printStackTrace();
-				}
+				generateJokeReport();
+				
 			}
 		});
 		panelReportEast.add(btnJokeReport, "cell 0 6 1 6");
@@ -168,27 +145,68 @@ public class View {
 		panelInsert.add(btnAddCracker, BorderLayout.SOUTH);
 		btnAddCracker.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DefaultTableModel dtm = (DefaultTableModel) table.getModel();
-				Object cid = dtm.getValueAt(0, 0);
-				Object name = dtm.getValueAt(0, 1);
-				Object jid = dtm.getValueAt(0, 2);
-				Object gid = dtm.getValueAt(0, 3);
-				Object hid = dtm.getValueAt(0, 4);
-				Object saleprice = dtm.getValueAt(0, 5);
+				addCracker();
 				
-				try {
-					adapter.addCracker(cid, name, jid, gid, hid, saleprice, 0);
-				} catch (NumberFormatException e1) {
-					JOptionPane.showMessageDialog(null, "Error creating new cracker. Ensure all fields are filled in.", MESSAGE_FROM_DB, 0);
-					e1.printStackTrace();
-				} catch (SQLException e1) {
-					JOptionPane.showMessageDialog(null, e1.getMessage(), MESSAGE_FROM_DB, 0);
-					e1.printStackTrace();
-				}
 			}
 		});
 		
 		frmBbcDatabase.setVisible(true);
-	}
+	}	
 
+	/**
+	 * Generates a report for the cracker the user has entered.
+	 */
+	protected void generateCrackerReport() {
+		String cid = txtCrackerId.getText();
+		try {
+			ResultSet queryResults = adapter.getCracker(cid);
+			CrackerReportView report = new CrackerReportView(queryResults);
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(null, "Error retrieving data. Check to ensure that you've entered an ID between 0 and 999.", MESSAGE_FROM_DB, 0);
+			ex.printStackTrace();
+		} catch (NumberFormatException ex) {
+			JOptionPane.showMessageDialog(null, "Error parsing input. Please enter a valid integer greater than zero.", MESSAGE_FROM_DB, 0);
+			ex.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Generates a report for the joke the user has entered.
+	 */
+	protected void generateJokeReport() {
+		String jid = txtJokeId.getText();
+		try {
+			ResultSet queryResults = adapter.getJoke(jid);
+			JokeReportView report = new JokeReportView(queryResults);
+		} catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, e1.getMessage(), MESSAGE_FROM_DB, 0);
+			e1.printStackTrace();
+		} catch (NumberFormatException e1) {
+			JOptionPane.showMessageDialog(null, "Error parsing input. Please enter a valid integer greater than zero.", "Message", 0);
+			e1.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Adds a new cracker with the details the user has specified.
+	 */
+	protected void addCracker() {
+		DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+		Object cid = dtm.getValueAt(0, 0);
+		Object name = dtm.getValueAt(0, 1);
+		Object jid = dtm.getValueAt(0, 2);
+		Object gid = dtm.getValueAt(0, 3);
+		Object hid = dtm.getValueAt(0, 4);
+		Object saleprice = dtm.getValueAt(0, 5);
+		
+		try {
+			adapter.addCracker(cid, name, jid, gid, hid, saleprice, 0);
+		} catch (NumberFormatException e1) {
+			JOptionPane.showMessageDialog(null, "Error parsing input for new cracker. Check that all fields are filled in and that they are of the right data type", "Message", 0);
+			e1.printStackTrace();
+		} catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, e1.getMessage(), MESSAGE_FROM_DB, 0);
+			e1.printStackTrace();
+		}
+	}
 }

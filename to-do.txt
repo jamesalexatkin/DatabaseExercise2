@@ -15,21 +15,24 @@
 	
 * Part 2
 	- 2.1
-		* database created correctly
-		* tables created correctly - appropriate constraints
+		/ database created correctly
+		/ tables created correctly - appropriate constraints
 	- 2.2
-		* some realistic data
-		* rest is filler data
+		/ some realistic data
+		/ rest is filler data
 * Part 3
 	- 3.1
-		* produce report for cracker
+		/ produce report for cracker
+		* exceptions
 	- 3.2
-		* produce report for joke
+		/ produce report for joke
+		* exceptions
 	- 3.3
-		* insert new cracker
+		/ insert new cracker
 		* test all constraints
+		* exceptions
 
-* Run through code to refactor
-* Remove unused bits and pieces
+/ Run through code to refactor
+/ Remove unused bits and pieces
 * Add comments
 * Run formatter over code

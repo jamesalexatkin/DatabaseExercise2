@@ -25,6 +25,10 @@ public class DatabaseHandler {
 		}
 	}
 
+    /**
+     * Prepares all the PreparedStatements that will be used.
+     * @throws SQLException
+     */
 	private void initStatements() throws SQLException {
 		// Statement for inserting a joke
 		String insertJokeString = "INSERT INTO Joke (jid, joke, royalty) VALUES (?, ?, ?);";
@@ -60,6 +64,9 @@ public class DatabaseHandler {
 	    selectJokeStatement = connection.prepareStatement(selectJokeString);
 	}
 
+	/**
+	 * Creates the four tables needed for the database.
+	 */
 	public void createDatabase() {
 		// Create joke table
 		String sql = "CREATE TABLE Joke ("
@@ -98,6 +105,9 @@ public class DatabaseHandler {
         createTable(sql, "Cracker");
     }
 
+	/**
+	 * Drops the four tables of the databse.
+	 */
 	public void dropDatabase() {		
 		dropTable("Cracker");
 		dropTable("Joke");
@@ -105,6 +115,10 @@ public class DatabaseHandler {
 		dropTable("Hat");
 	}
 	
+	/**
+	 * Drops the table with the specified name.
+	 * @param tableName
+	 */
 	private void dropTable(String tableName) {
 		String sql = "DROP TABLE " + tableName + ";";
 		try {
@@ -112,10 +126,15 @@ public class DatabaseHandler {
 			dropStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Error dropping table '" + tableName + "'.");
+			System.out.println("Error dropping table '" + tableName + "'. Check that it exists in the database.");
 		}
 	}
 
+	/**
+	 * Creates a table with the specified name.
+	 * @param sql
+	 * @param tableName
+	 */
 	private void createTable(String sql, String tableName) {
 		try {
 			PreparedStatement createTableStatement = connection.prepareStatement(sql);		
@@ -126,6 +145,12 @@ public class DatabaseHandler {
 		}		
 	}
 
+	/**
+	 * Inserts a new joke with the specified details.
+	 * @param jid
+	 * @param joke
+	 * @param royalty
+	 */
 	public void insertJoke(int jid, String joke, float royalty) {
 		try {
 			insertJokeStatement.setInt(1, jid);
@@ -139,6 +164,12 @@ public class DatabaseHandler {
 		}
 	}
 
+	/**
+	 * Inserts a new gift with the specified details.
+	 * @param gid
+	 * @param description
+	 * @param price
+	 */
 	public void insertGift(int gid, String description, float price) {
 		try {
 			insertGiftStatement.setInt(1, gid);
@@ -152,6 +183,12 @@ public class DatabaseHandler {
 		}		
 	}
 
+	/**
+	 * Inserts a new hat with the specified details.
+	 * @param hid
+	 * @param description
+	 * @param price
+	 */
 	public void insertHat(int hid, String description, float price) {
 		try {
 			insertHatStatement.setInt(1, hid);
@@ -165,6 +202,16 @@ public class DatabaseHandler {
 		}	
 	}
 
+	/**
+	 * Inserts a new cracker with the specified details.
+	 * @param cid
+	 * @param name
+	 * @param jid
+	 * @param gid
+	 * @param hid
+	 * @param saleprice
+	 * @param quantity
+	 */
 	public void insertCracker(int cid, String name, int jid, int gid, int hid, float saleprice, int quantity) {
 		try {
 			insertCrackerStatement.setInt(1, cid);
@@ -182,18 +229,44 @@ public class DatabaseHandler {
 		}	
 	}
 
+	/**
+	 * Selects the cracker with the specified cid.
+	 * @param cid
+	 * @return a ResultSet with any matching crackers
+	 * @throws SQLException
+	 * @throws NumberFormatException
+	 */
 	public ResultSet selectCracker(String cid) throws SQLException, NumberFormatException {
 		int cidInt = Integer.parseInt(cid);
 		selectCrackerStatement.setInt(1, cidInt);
 		return selectCrackerStatement.executeQuery();
 	}
 
+	/**
+	 * Selects the joke with the specified jid.
+	 * @param jid
+	 * @return a ResultSet with any matching jokes
+	 * @throws SQLException
+	 * @throws NumberFormatException
+	 */
 	public ResultSet selectJoke(String jid) throws SQLException, NumberFormatException {
 		int jidInt = Integer.parseInt(jid);
 		selectJokeStatement.setInt(1, jidInt);
 		return selectJokeStatement.executeQuery();
 	}
 
+	/**
+	 * Inserts a cracker with the specified details.
+	 * @param cid
+	 * @param name
+	 * @param jid
+	 * @param gid
+	 * @param hid
+	 * @param saleprice
+	 * @param quantity
+	 * @throws SQLException
+	 * @throws NumberFormatException
+	 */
 	public void insertCracker(Object cid, Object name, Object jid, Object gid, Object hid, Object saleprice,
 			int quantity) throws SQLException, NumberFormatException {
 			insertCrackerStatement.setInt(1, Integer.parseInt((String) cid));
